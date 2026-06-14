@@ -1,0 +1,266 @@
+/* ===========================
+   ProfilePage.css
+   =========================== */
+
+.profile-page {
+  min-height: 100vh;
+  padding-bottom: 80px;
+  background: var(--color-bg-light);
+}
+
+.profile-page-header {
+  background: linear-gradient(135deg, #0d3d2b 0%, #006638 100%);
+  padding: 40px 0 56px;
+  margin-bottom: -24px;
+}
+.profile-page-header__title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  color: white;
+}
+
+.profile-layout {
+  padding-top: 36px;
+}
+
+/* Identity card */
+.profile-identity-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  text-align: center;
+}
+.profile-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+.profile-avatar-edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: 2px solid white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.profile-avatar-edit:hover { background: var(--color-primary-dark); }
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+.profile-headline {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.profile-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.profile-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+}
+.profile-contact-item .anticon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.profile-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* Completion */
+.profile-side-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.profile-completion__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.profile-completion__label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.profile-completion__percent {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.profile-completion__items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.completion-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.completion-item.done { color: var(--color-text-primary); }
+.completion-item__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* Main card */
+.profile-main-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  min-height: 400px;
+}
+
+/* Profile sections */
+.profile-sections { padding: 8px 0; }
+.profile-section { padding: 8px 0; }
+.profile-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.profile-section__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-section__title .anticon { color: var(--color-primary); }
+.profile-section__content {
+  font-size: 14.5px;
+  color: var(--color-text-primary);
+  line-height: 1.7;
+}
+.profile-empty-text {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Skills */
+.profile-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Education / Experience */
+.profile-edu-item,
+.profile-exp-item {
+  display: flex;
+  gap: 16px;
+}
+.profile-edu-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.profile-edu-school {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 3px;
+}
+.profile-edu-degree {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 3px;
+}
+.profile-edu-year {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Applied jobs tab */
+.profile-tab-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+}
+.profile-applied-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.applied-job-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.applied-job-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--color-bg-light);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.applied-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+.applied-status-badge--pending {
+  background: #fff8e1;
+  color: #f59e0b;
+}
+.applied-status-badge--approved {
+  background: #e6f9ee;
+  color: var(--color-primary);
+}
+.applied-status-badge--rejected {
+  background: #fde8e8;
+  color: #e53e3e;
+}
+.applied-date {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,127 @@
+/* ===========================
+   BecomeEmployerPage.css
+   =========================== */
+
+.become-employer-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.become-employer-page__inner {
+  text-align: center;
+  max-width: 520px;
+}
+
+/* icon lớn (thay cho 404) */
+.become-employer-icon {
+  font-size: 90px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, var(--color-primary), #7c4dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.9;
+}
+
+/* emoji có animation nhẹ */
+.become-employer-emoji {
+  font-size: 60px;
+  margin-bottom: 16px;
+  animation: float 2.5s ease-in-out infinite;
+}
+
+/* animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* tiêu đề */
+.become-employer-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+/* mô tả */
+.become-employer-desc {
+  font-size: 15.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+/* benefits */
+.become-employer-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+}
+
+.become-employer-benefits li {
+  font-size: 14.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 22px;
+}
+
+.become-employer-benefits li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+/* buttons */
+.become-employer-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* primary button nổi bật */
+.become-employer-actions .ant-btn-primary {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease;
+}
+
+.become-employer-actions .ant-btn-primary:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* button thường */
+.become-employer-actions .ant-btn {
+  transition: all 0.2s ease;
+}
+
+.become-employer-actions .ant-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .become-employer-icon {
+    font-size: 70px;
+  }
+
+  .become-employer-title {
+    font-size: 24px;
+  }
+
+  .become-employer-emoji {
+    font-size: 48px;
+  }
+}

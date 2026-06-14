@@ -1,0 +1,13 @@
+.main-layout {
+  min-height: 100vh;
+  display: flex; /* Kích hoạt Flexbox cho layout chính */
+  flex-direction: column; /* Xếp Header, Content, Footer theo chiều dọc */
+  background-color: var(--color-bg-light);
+}
+
+.main-content {
+  flex: 1; /* Tự động giãn ra để chiếm trọn không gian thừa, đẩy Footer xuống đáy */
+  display: flex; /* Kích hoạt Flexbox cho Content để quản lý các component con bên trong */
+  flex-direction: column;
+  width: 100%;
+}

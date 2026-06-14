@@ -1,0 +1,86 @@
+.job-filter {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  position: sticky;
+  top: 80px;
+}
+
+.job-filter__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.job-filter__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+.job-filter__title .anticon {
+  color: var(--color-primary);
+}
+
+.job-filter__reset {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+.job-filter__reset:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.job-filter__body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.job-filter__group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.job-filter__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Job type buttons */
+.job-filter__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.job-filter__type-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-border);
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.job-filter__type-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.job-filter__type-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}

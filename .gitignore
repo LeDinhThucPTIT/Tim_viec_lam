@@ -1,0 +1,11 @@
+BACKEND/node_modules
+topcv-clone/node_modules
+
+BACKEND/.env
+topcv-clone/.env
+
+dist
+build
+
+.vscode
+.idea

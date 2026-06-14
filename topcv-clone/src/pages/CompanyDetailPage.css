@@ -1,0 +1,302 @@
+.company-detail-page {
+  min-height: 100vh;
+  background: var(--color-bg-light);
+  padding-bottom: 80px;
+}
+.company-cover {
+  height: 180px;
+  position: relative;
+}
+.company-back-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  transition: all 0.2s;
+}
+.company-back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.company-identity-strip {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+}
+.company-identity {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 24px 0 28px;
+}
+.company-identity__logo-wrap {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: -52px;
+}
+.company-identity__logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  border: 4px solid #fff;
+  object-fit: contain;
+  background: #fff;
+  padding: 6px;
+  box-shadow: var(--shadow-md);
+}
+.company-identity__verified {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.company-identity__info {
+  flex: 1;
+  min-width: 0;
+}
+.company-identity__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.company-identity__name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+.company-identity__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+}
+.company-identity__meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.company-identity__actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.company-identity__stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.company-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.company-stat__value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+.company-stat__label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.company-detail-body {
+  padding-top: 32px;
+}
+.company-detail-tabs-wrap {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 0 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid var(--color-border-light);
+  margin-bottom: 20px;
+}
+.company-detail-tabs .ant-tabs-tab {
+  padding: 14px 4px;
+  font-size: 14.5px;
+  font-weight: 500;
+}
+.company-detail-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-primary) !important;
+  font-weight: 700;
+}
+.company-detail-tabs .ant-tabs-ink-bar {
+  background: var(--color-primary);
+}
+.company-detail-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+.company-about-content {
+  display: flex;
+  flex-direction: column;
+}
+.company-section {
+  background: #fff;
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+.company-section__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.company-section__title::before {
+  content: "";
+  width: 4px;
+  height: 20px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.company-section__body p {
+  font-size: 14.5px;
+  color: #374151;
+  line-height: 1.85;
+  margin-bottom: 12px;
+}
+.company-why-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.company-why-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+.company-why-icon {
+  color: var(--color-primary);
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.company-jobs-content {
+  background: #fff;
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  min-height: 200px;
+}
+.company-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 80px;
+}
+.company-info-card {
+  background: #fff;
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+}
+.company-info-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.company-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+.company-info-row .anticon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 16px;
+}
+.company-info-link {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.company-overview-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13.5px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.company-overview-row:last-child {
+  border-bottom: none;
+}
+.company-overview-row__label {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+.company-overview-row__value {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: right;
+}
+@media (max-width: 1024px) {
+  .company-sidebar {
+    position: static;
+  }
+  .company-identity__top {
+    flex-direction: column;
+  }
+}
+@media (max-width: 768px) {
+  .company-cover {
+    height: 130px;
+  }
+  .company-identity {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .company-identity__logo-wrap {
+    margin-top: -40px;
+  }
+  .company-identity__logo {
+    width: 76px;
+    height: 76px;
+  }
+  .company-section {
+    padding: 20px;
+  }
+}
