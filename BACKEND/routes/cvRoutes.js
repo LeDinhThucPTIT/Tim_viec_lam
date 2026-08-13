@@ -28,16 +28,18 @@ const {
 router.get("/:id/download", cvController.downloadCV);
 router.post("/:id/download", cvController.downloadCV);
 
-// LƯU Ý 2: Route /score đang để public (không có verifyToken).
-// Nếu chức năng chấm điểm CV này cần đăng nhập thì bạn nên đưa xuống phần Private nhé!
-router.post("/score", cvscoreController.scoreCV);
-
 // ==========================================
 // PRIVATE ROUTES (Bắt buộc phải có Token và phải là [ỨNG VIÊN])
 // ==========================================
 
+// Chấm điểm CV AI (Cần đăng nhập)
+router.post("/score", verifyToken, cvscoreController.scoreCV);
+
 // Lấy danh sách toàn bộ CV của ứng viên đang đăng nhập
 router.get("/", verifyToken, isCandidate, cvController.getCVList);
+
+// Lấy chi tiết 1 CV theo ID
+router.get("/:id", verifyToken, isCandidate, cvController.getCVById);
 
 // Tạo một CV mới từ giao diện Builder (Lưu dạng dữ liệu JSON)
 router.post("/", verifyToken, isCandidate, cvController.createCV);

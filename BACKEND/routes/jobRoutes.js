@@ -44,7 +44,10 @@ router.post(
   verifyToken,
   isCandidate,
   jobController.checkAlreadyApplied,
-  uploadCv.single("cv"), // BẮT BUỘC CÓ DÒNG NÀY ĐỂ HỨNG FILE
+  uploadCv.fields([
+    { name: "cv", maxCount: 1 },
+    { name: "file", maxCount: 1 },
+  ]),
   jobController.applyJob,
 );
 

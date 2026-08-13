@@ -25,7 +25,7 @@ exports.verifyToken = (req, res, next) => {
     // Giải mã token bằng Secret Key
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "topcv_clone_super_secret_key_2026_xyz",
+      process.env.JWT_SECRET || "topcv_secret_key_2026_default",
     );
 
     // Gắn thông tin giải mã được (chứa id và role) vào request để các Controller dùng
@@ -71,7 +71,7 @@ exports.optionalAuth = (req, res, next) => {
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "topcv_clone_super_secret_key_2026_xyz",
+      process.env.JWT_SECRET || "topcv_secret_key_2026_default",
     );
     req.user = decoded;
   } catch (error) {

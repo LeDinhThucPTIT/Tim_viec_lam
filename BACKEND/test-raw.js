@@ -1,4 +1,3 @@
-
 const apiKey = "AIzaSyDZpjPjHygj0C5p7LvAD7hMb7zGjnAM4n4";
 const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
 
@@ -14,7 +13,7 @@ async function getModels() {
 
     console.log("\n=== DANH SÁCH MODEL HỢP LỆ CHO API KEY CỦA BẠN ===");
     data.models.forEach((m) => {
-      // Chỉ lọc ra các model hỗ trợ sinh text 
+      // Chỉ lọc ra các model hỗ trợ sinh text
       if (m.supportedGenerationMethods.includes("generateContent")) {
         console.log(`👉 ${m.name.replace("models/", "")}`);
       }

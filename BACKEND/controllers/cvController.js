@@ -1,9 +1,20 @@
 const CV = require("../models/CV");
 const fs = require("fs");
 const path = require("path");
-const mongoose = require("mongoose");
 const puppeteer = require("puppeteer");
+const mongoose = require("mongoose");
 const { renderCreatedCVHtml } = require("../utils/cvTemplate");
+
+let globalBrowser = null;
+const getBrowser = async () => {
+  if (!globalBrowser || !globalBrowser.isConnected()) {
+    globalBrowser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+  }
+  return globalBrowser;
+};
 
 const cvController = {
   // Lấy danh sách CV
@@ -15,6 +26,22 @@ const cvController = {
       res.status(200).json(cvs);
     } catch (error) {
       res.status(500).json({ message: "Lỗi khi lấy danh sách CV", error });
+    }
+  },
+
+  // Lấy chi tiết 1 CV theo ID
+  getCVById: async (req, res) => {
+    try {
+      const cv = await CV.findOne({
+        _id: req.params.id,
+        userId: req.user.id,
+      });
+      if (!cv) return res.status(404).json({ message: "Không tìm thấy CV" });
+      res.status(200).json(cv);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Lỗi khi lấy thông tin CV", error: error.message });
     }
   },
 
@@ -122,7 +149,7 @@ const cvController = {
 
   // Tải CV (Tăng view/download và tạo PDF)
   downloadCV: async (req, res) => {
-    let browser;
+    let page;
 
     try {
       if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -162,13 +189,10 @@ const cvController = {
         });
       }
 
-      // Sinh PDF nếu là CV Builder
+      // Sinh PDF nếu là CV Builder (Sử dụng Singleton Puppeteer Browser)
       const htmlContent = renderCreatedCVHtml(cv);
-      browser = await puppeteer.launch({
-        headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
-      const page = await browser.newPage();
+      const browser = await getBrowser();
+      page = await browser.newPage();
       await page.setViewport({
         width: 1200,
         height: 1600,
@@ -189,8 +213,6 @@ const cvController = {
         printBackground: true,
         margin: { top: "10mm", right: "10mm", bottom: "10mm", left: "10mm" },
       });
-      await browser.close();
-      browser = null;
 
       const outputFilename = `${cv.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.pdf`;
       res.setHeader("Content-Type", "application/pdf");
@@ -209,8 +231,8 @@ const cvController = {
         });
       }
     } finally {
-      if (browser) {
-        await browser.close().catch((error) => console.error(error));
+      if (page) {
+        await page.close().catch((err) => console.error("Error closing page:", err));
       }
     }
   },

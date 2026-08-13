@@ -8,7 +8,7 @@ const Employer = require("../models/Employer");
 const generateToken = (id, role) => {
   return jwt.sign(
     { id, role },
-    process.env.JWT_SECRET || "jwt_secret_key_topcv",
+    process.env.JWT_SECRET || "topcv_secret_key_2026_default",
     {
       expiresIn: "7d", // Token sống trong 7 ngày
     },
@@ -29,6 +29,15 @@ exports.register = async (req, res) => {
         .json({ message: "Vui lòng điền đầy đủ thông tin" });
     }
 
+    // Kiểm tra email tồn tại ở CẢ 2 BẢNG (User và Employer) để tránh xung đột
+    const existingUser = await User.findOne({ email });
+    const existingEmployer = await Employer.findOne({ email });
+    if (existingUser || existingEmployer) {
+      return res.status(400).json({
+        message: "Email này đã được sử dụng trong hệ thống.",
+      });
+    }
+
     // 2. Mã hóa mật khẩu
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -38,16 +47,8 @@ exports.register = async (req, res) => {
 
     // 3. Phân luồng đăng ký dựa vào Role
     if (role === "employer") {
-      // 3.1 Xử lý đăng ký cho Nhà tuyển dụng
-      const existingEmployer = await Employer.findOne({ email });
-      if (existingEmployer) {
-        return res.status(400).json({
-          message: "Email này đã được sử dụng cho tài khoản Nhà tuyển dụng.",
-        });
-      }
-
       newUser = new Employer({
-        companyName,
+        companyName: companyName || name,
         email,
         phone,
         password: hashedPassword,
@@ -57,14 +58,6 @@ exports.register = async (req, res) => {
       await newUser.save();
       token = generateToken(newUser._id, newUser.role);
     } else {
-      // 3.2 Xử lý đăng ký cho Ứng viên (Candidate)
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res
-          .status(400)
-          .json({ message: "Email này đã được đăng ký. Vui lòng đăng nhập." });
-      }
-
       newUser = new User({
         name,
         email,
@@ -84,7 +77,7 @@ exports.register = async (req, res) => {
       token,
       user: {
         id: newUser._id,
-        name: newUser.name,
+        name: newUser.name || newUser.companyName,
         email: newUser.email,
         phone: newUser.phone,
         role: newUser.role,
@@ -143,7 +136,7 @@ exports.login = async (req, res) => {
       token,
       user: {
         id: user._id,
-        name: user.name,
+        name: user.name || user.companyName,
         email: user.email,
         role: user.role,
         avatar: !isEmployer ? user.avatar : undefined,
@@ -169,8 +162,9 @@ exports.getProfile = async (req, res) => {
     if (req.user.role === "candidate") {
       const user = await User.findById(req.user.id)
         .select("-password")
-        .populate("savedJobs") // Lấy chi tiết thông tin công việc đã lưu
-        .populate("appliedJobs"); // Lấy chi tiết thông tin công việc đã ứng tuyển.lean();
+        .populate("savedJobs")
+        .populate("appliedJobs")
+        .lean();
 
       if (!user) {
         return res.status(404).json({ message: "Không tìm thấy candidate" });
@@ -198,7 +192,7 @@ exports.getProfile = async (req, res) => {
       .status(500)
       .json({ message: "Lỗi lấy thông tin profile", error: error.message });
   }
-}; 
+};
 
 // ==========================================
 // UPDATE PROFILE - Cập nhật thông tin cá nhân
@@ -207,6 +201,7 @@ exports.updateProfile = async (req, res) => {
   try {
     const {
       name,
+      companyName,
       phone,
       headline,
       location,
@@ -218,12 +213,14 @@ exports.updateProfile = async (req, res) => {
       github,
     } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: "Họ và tên là bắt buộc!" });
+    const targetName = name || companyName;
+    if (!targetName) {
+      return res.status(400).json({ message: "Tên là bắt buộc!" });
     }
 
     const updateData = {
-      name,
+      name: targetName,
+      companyName: targetName,
       phone,
       headline,
       location,
@@ -235,20 +232,28 @@ exports.updateProfile = async (req, res) => {
       github,
     };
 
+    let updatedAccount;
+    if (req.user.role === "employer") {
+      updatedAccount = await Employer.findByIdAndUpdate(
+        req.user.id,
+        { $set: updateData },
+        { new: true, runValidators: true },
+      ).select("-password");
+    } else {
+      updatedAccount = await User.findByIdAndUpdate(
+        req.user.id,
+        { $set: updateData },
+        { new: true, runValidators: true },
+      ).select("-password");
+    }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { $set: updateData },
-      { new: true, runValidators: true },
-    ).select("-password");
-
-    if (!updatedUser) {
+    if (!updatedAccount) {
       return res
         .status(404)
         .json({ message: "Không tìm thấy người dùng để cập nhật!" });
     }
 
-    return res.status(200).json(updatedUser);
+    return res.status(200).json(updatedAccount);
   } catch (error) {
     console.error("Lỗi updateProfile:", error);
     return res.status(500).json({ message: "Lỗi server khi lưu hồ sơ!" });
@@ -262,7 +267,7 @@ exports.changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
-    if (!oldPassword || !newPassword || !confirmNewPassword) {
+    if (!oldPassword || !newPassword) {
       return res
         .status(400)
         .json({ message: "Vui lòng nhập đầy đủ các trường mật khẩu!" });
@@ -274,7 +279,7 @@ exports.changePassword = async (req, res) => {
         .json({ message: "Mật khẩu mới phải có ít nhất 6 ký tự!" });
     }
 
-    if (newPassword !== confirmNewPassword) {
+    if (confirmNewPassword && newPassword !== confirmNewPassword) {
       return res.status(400).json({ message: "Mật khẩu xác nhận không khớp!" });
     }
 

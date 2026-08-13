@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const AuthController = require("../controllers/Auth"); // Lưu ý: Tên file lúc trước bạn gửi là authController.js, hãy đảm bảo import đúng tên file nhé
+const AuthController = require("../controllers/auth"); // Lưu ý: Tên file lúc trước bạn gửi là authController.js, hãy đảm bảo import đúng tên file nhé
 const { verifyToken } = require("../middleware/authMiddleware");
 
 const { uploadImage } = require("../middleware/upload");

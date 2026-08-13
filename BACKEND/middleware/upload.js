@@ -66,7 +66,7 @@ const imgFileFilter = (req, file, cb) => {
 const uploadImage = multer({
   storage: imgStorage,
   fileFilter: imgFileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB cho ảnh là đủ
+  limits: { fileSize: 20 * 1024 * 1024 },
 });
 
 // Xuất cả 2 ra để dùng ở các route khác nhau

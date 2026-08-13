@@ -240,8 +240,18 @@ const jobController = {
       const candidateId = req.user.id;
 
       // Hứng dữ liệu text từ formData (Frontend gửi lên)
-      const { fullName, email, phone, coverLetter, cvType, onlineCvSnapshot } =
+      const { fullName, email, phone, coverLetter, onlineCvSnapshot } =
         req.body;
+      const rawCvType = req.body.cvType;
+      const cvType =
+        typeof rawCvType === "string"
+          ? rawCvType.trim().toLowerCase()
+          : rawCvType;
+
+      const uploadedFile =
+        req.file ||
+        (req.files && req.files.cv && req.files.cv[0]) ||
+        (req.files && req.files.file && req.files.file[0]);
 
       // 1. Kiểm tra xem đã ứng tuyển chưa
       const existingApp = await Application.findOne({
@@ -270,26 +280,28 @@ const jobController = {
 
       // 3. Xử lý logic theo loại CV
       if (cvType === "pdf") {
-        // File upload qua multer sẽ nằm ở req.file
-        if (!req.file) {
+        if (!uploadedFile) {
           return res.status(400).json({ message: "Vui lòng đính kèm file CV" });
         }
-        applicationData.pdfCvUrl = `/uploads/cvs/${req.file.filename}`;
+        applicationData.pdfCvUrl = `/uploads/cvs/${uploadedFile.filename}`;
       } else if (cvType === "online") {
         if (!onlineCvSnapshot) {
-          await removeUploadedFile(req.file);
+          await removeUploadedFile(uploadedFile);
           return res
             .status(400)
             .json({ message: "Không tìm thấy dữ liệu CV Online" });
         }
-        // FormData thường gửi text, nên cần parse JSON nếu nó là chuỗi
         applicationData.onlineCvSnapshot =
           typeof onlineCvSnapshot === "string"
             ? JSON.parse(onlineCvSnapshot)
             : onlineCvSnapshot;
       } else {
-        await removeUploadedFile(req.file);
-        return res.status(400).json({ message: "Loại CV không hợp lệ" });
+        await removeUploadedFile(uploadedFile);
+        return res.status(400).json({
+          message:
+            "Loại CV không hợp lệ. Vui lòng gửi cvType = 'pdf' hoặc 'online'.",
+          receivedType: rawCvType,
+        });
       }
 
       // 4. Lưu Application vào DB
