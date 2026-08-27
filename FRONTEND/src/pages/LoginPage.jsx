@@ -18,6 +18,7 @@ import { useAuth } from "../hooks/useAuth";
 import "./AuthPages.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import apiClient from "../services/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const LoginPage = () => {
         });
 
         // Gọi xuống API Backend của bạn để đổi Code lấy Token
-        const res = await axios.post("http://localhost:5000/auth/google", {
+        const res = await apiClient.post("/auth/google", {
           code: codeResponse.code,
         });
 

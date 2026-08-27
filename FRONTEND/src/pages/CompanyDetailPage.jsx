@@ -22,7 +22,7 @@ import {
 
 import JobCard from "../components/job/JobCard";
 import companyService from "../services/companyService";
-import jobService from "../services/jobService"; 
+import jobService from "../services/jobService";
 import "./CompanyDetailPage.css";
 
 const CompanyDetailPage = () => {
