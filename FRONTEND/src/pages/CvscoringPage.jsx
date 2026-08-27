@@ -39,7 +39,7 @@ import {
   MinusOutlined,
 } from "@ant-design/icons";
 import cvService from "../services/cvService";
-import "./cvscoringpage.css";
+import "./CvscoringPage.css";
 
 const { Option } = Select;
 const { TextArea } = Input;
