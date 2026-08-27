@@ -16,7 +16,11 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin, callback) => {
     // Cho phép các request không có origin (ví dụ như Postman, cURL) hoặc nằm trong danh sách được phép
-    if (!origin || allowedOrigins.includes(origin) || origin.startsWith("http://localhost:")) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.startsWith("http://localhost:")
+    ) {
       callback(null, true);
     } else {
       callback(new Error("CORS Policy: Origin không được phép kết nối"));

@@ -4,10 +4,9 @@
 
 const jwt = require("jsonwebtoken");
 
-/**
- *  Middleware kiểm tra Token hợp lệ
- * Áp dụng cho MỌI API yêu cầu đăng nhập
- */
+// Middleware kiểm tra Token hợp lệ
+// Áp dụng cho MỌI API yêu cầu đăng nhập
+
 exports.verifyToken = (req, res, next) => {
   // Lấy token từ header Authorization. Định dạng chuẩn: "Bearer <token>"
   const authHeader = req.headers.authorization;
@@ -46,9 +45,8 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
-/**
- *  Middleware phân quyền: Dành riêng cho Nhà tuyển dụng
- */
+// Middleware phân quyền: Dành riêng cho Nhà tuyển dụng
+
 exports.isEmployer = (req, res, next) => {
   // Lúc này req.user đã có sẵn nhờ hàm verifyToken chạy trước đó
   if (!req.user || req.user.role !== "employer") {
@@ -81,10 +79,8 @@ exports.optionalAuth = (req, res, next) => {
   next();
 };
 
-/**
- *  Middleware phân quyền: Dành riêng cho Ứng viên (Candidate)
+//Middleware phân quyền: Dành riêng cho Ứng viên (Candidate)
 
- */
 exports.isCandidate = (req, res, next) => {
   if (!req.user || req.user.role !== "candidate") {
     return res.status(403).json({

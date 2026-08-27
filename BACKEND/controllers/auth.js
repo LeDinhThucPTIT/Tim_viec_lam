@@ -1,9 +1,11 @@
 // controllers/authController.js
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const User = require("../models/User");
 const Employer = require("../models/Employer");
-
+const OTP = require("../models/OTP");
+const { OAuth2Client } = require("google-auth-library");
 // Hàm tạo Token dùng chung
 const generateToken = (id, role) => {
   return jwt.sign(
@@ -146,6 +148,75 @@ exports.login = async (req, res) => {
   } catch (error) {
     console.error("Lỗi đăng nhập:", error);
     res.status(500).json({ message: "Lỗi server, vui lòng thử lại sau." });
+  }
+};
+
+// ==========================================
+// LOGIN WITH GOOGLE - Đăng nhập với Google
+// ==========================================
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  "postmessage",
+);
+exports.loginWithGoogle = async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code)
+      return res.status(400).json({ message: "Thiếu mã xác thực từ frontend" });
+
+    // 1. Đổi code lấy token và thông tin từ Google
+    const { tokens } = await googleClient.getToken(code);
+    const ticket = await googleClient.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    // Google trả về name, email, picture
+    const { email, name, picture } = ticket.getPayload();
+
+    // 2. Kiểm tra Database
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // 3. TẠO MỚI (Đã sửa để khớp hoàn toàn với userSchema của bạn)
+
+      const randomPassword =
+        Math.random().toString(36).slice(-10) + Date.now().toString();
+
+      user = await User.create({
+        name: name,
+        email: email,
+        password: randomPassword,
+        avatar: picture,
+        role: "candidate",
+      });
+    }
+
+    // 4. Cấp JWT của hệ thống (Sử dụng _id của MongoDB)
+    const systemToken = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+
+    // 5. Trả kết quả về Frontend
+    return res.status(200).json({
+      message: "Đăng nhập Google thành công",
+      token: systemToken,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi xác thực Google:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Quá trình xác thực Google thất bại" });
   }
 };
 
@@ -316,7 +387,6 @@ exports.changePassword = async (req, res) => {
 // ==========================================
 exports.updateAvatar = async (req, res) => {
   try {
-
     if (!req.file) {
       return res.status(400).json({ message: "Vui lòng chọn một file ảnh!" });
     }
@@ -326,7 +396,6 @@ exports.updateAvatar = async (req, res) => {
     const fileUrl = `${protocol}://${host}/uploads/img/${req.file.filename}`;
 
     let updatedAccount;
-
 
     if (req.user.role === "candidate") {
       updatedAccount = await User.findByIdAndUpdate(
@@ -350,10 +419,9 @@ exports.updateAvatar = async (req, res) => {
         .json({ message: "Không tìm thấy tài khoản để cập nhật!" });
     }
 
-   
     return res.status(200).json({
       message: "Cập nhật ảnh thành công!",
-     
+
       avatarUrl:
         req.user.role === "employer"
           ? updatedAccount.logo
@@ -365,5 +433,107 @@ exports.updateAvatar = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Lỗi server khi cập nhật ảnh đại diện!" });
+  }
+};
+
+// ==========================================
+// FORGOT PASSWORD - Quên mật khẩu
+// ==========================================
+
+exports.sendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Vui lòng nhập email!" });
+    }
+
+    // Kiểm tra email tồn tại trong hệ thống (cả User và Employer)
+    const user = await User.findOne({ email });
+    const employer = await Employer.findOne({ email });
+    if (!user && !employer) {
+      return res.status(404).json({
+        message: "Email này không tồn tại trong hệ thống.",
+      });
+    }
+
+    await OTP.deleteMany({ email });
+
+    // Tạo OTP mới
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // OTP 6 chữ số
+
+    // Lưu OTP vào cơ sở dữ liệu
+    const newOTP = new OTP({ email, otp });
+    await newOTP.save();
+
+    // Gửi OTP qua email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Mã OTP xác thực",
+      text: `Mã OTP của bạn là: ${otp}. Mã này sẽ hết hạn sau 5 phút.`,
+    });
+    res.status(200).json({
+      success: true,
+      message: "Mã OTP đã được gửi đến email của bạn.",
+    });
+  } catch (error) {
+    console.error("Lỗi sendOTP:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi server khi gửi OTP. Vui lòng thử lại sau.",
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng điền đầy đủ thông tin.",
+      });
+    }
+    const otpRecord = await OTP.findOne({ email, otp });
+    if (!otpRecord) {
+      return res.status(400).json({
+        success: false,
+        message: "Mã OTP không hợp lệ hoặc đã hết hạn.",
+      });
+    }
+    // Xác thực thành công, tiến hành đổi mật khẩu
+    let user = await User.findOne({ email });
+    let isEmployer = false;
+    if (!user) {
+      user = await Employer.findOne({ email });
+      isEmployer = true;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    // Xóa OTP sau khi đổi mật khẩu thành công
+    await OTP.deleteMany({ email });
+
+    return res.status(200).json({
+      success: true,
+      message: "Đổi mật khẩu thành công!",
+    });
+  } catch (error) {
+    console.error("Lỗi resetPassword:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi server khi đổi mật khẩu. Vui lòng thử lại sau.",
+    });
   }
 };

@@ -18,76 +18,81 @@ import BecomeEmployerPage from "./pages/BecomeEmployerPage";
 import CompanyDetailPage from "./pages/CompanyDetailPage";
 import CvscoringPage from "./pages/CvscoringPage";
 import EmployerLayout from "./layouts/EmployerLayout";
+import ForgotPassPage from "./pages/ForgotPassPage";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Public routes with main layout */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/jobs" element={<JobListPage />} />
-            <Route path="/jobs/:id" element={<JobDetailPage />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/companies"
-              element={
-                <ProtectedRoute>
-                  <CompaniesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/companies/:id" element={<CompanyDetailPage />} />
-            <Route
-              path="/cv"
-              element={
-                <ProtectedRoute>
-                  <CVPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/cvscoring"
-              element={
-                <ProtectedRoute>
-                  <CvscoringPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/become-employer" element={<BecomeEmployerPage />} />
-          </Route>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            {/* Public routes with main layout */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/jobs" element={<JobListPage />} />
+              <Route path="/jobs/:id" element={<JobDetailPage />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/companies"
+                element={
+                  <ProtectedRoute>
+                    <CompaniesPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/companies/:id" element={<CompanyDetailPage />} />
+              <Route
+                path="/cv"
+                element={
+                  <ProtectedRoute>
+                    <CVPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/cvscoring"
+                element={
+                  <ProtectedRoute>
+                    <CvscoringPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/become-employer" element={<BecomeEmployerPage />} />
+            </Route>
 
-          <Route element={<EmployerLayout />}>
-            <Route
-              path="/employer/dashboard"
-              element={
-                <ProtectedRoute requiredRole="employer">
-                  <EmployerDashboardPage />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
+            <Route element={<EmployerLayout />}>
+              <Route
+                path="/employer/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="employer">
+                    <EmployerDashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
 
-          {/* Auth routes with minimal layout */}
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
+            {/* Auth routes with minimal layout */}
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPassPage />} />
+            </Route>
 
-          {/* 404 */}
-          <Route path="/404" element={<NotFoundPage />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+            {/* 404 */}
+            <Route path="/404" element={<NotFoundPage />} />
+            <Route path="*" element={<Navigate to="/404" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 };
 

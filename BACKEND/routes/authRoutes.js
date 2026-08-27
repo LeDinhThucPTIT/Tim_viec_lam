@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const AuthController = require("../controllers/auth"); // Lưu ý: Tên file lúc trước bạn gửi là authController.js, hãy đảm bảo import đúng tên file nhé
+const AuthController = require("../controllers/auth");
 const { verifyToken } = require("../middleware/authMiddleware");
 
 const { uploadImage } = require("../middleware/upload");
 
 // dang nhap
 router.post("/login", AuthController.login);
+
+router.post("/google", AuthController.loginWithGoogle);
 
 // dang ky
 router.post("/register", AuthController.register);
@@ -27,5 +29,11 @@ router.post(
   uploadImage.single("avatar"), // Bước 2: Xử lý file ảnh và lưu vào thư mục img
   AuthController.updateAvatar, // Bước 3: Cập nhật đường dẫn ảnh vào Database
 );
+
+// xac thuc OTP
+router.post("/send-otp", AuthController.sendOTP);
+
+// doi mat khau voi otp
+router.post("/reset-password", AuthController.resetPassword);
 
 module.exports = router;

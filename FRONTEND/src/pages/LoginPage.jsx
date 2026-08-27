@@ -16,6 +16,8 @@ import {
 } from "@ant-design/icons";
 import { useAuth } from "../hooks/useAuth";
 import "./AuthPages.css";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,26 +26,21 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      
       const userData = await login(values);
 
       message.success("Đăng nhập thành công! Chào mừng bạn trở lại 👋");
 
-     
       const isEmployer = userData?.role === "employer";
 
       // Nếu là nhà tuyển dụng thì trang mặc định là dashboard, ngược lại là trang chủ
       const defaultPath = isEmployer ? "/employer/dashboard" : "/";
 
-   
       const fromPath = location.state?.from?.pathname;
       const targetPath = fromPath && fromPath !== "/" ? fromPath : defaultPath;
 
-     
       navigate(targetPath, { replace: true });
     } catch (err) {
       message.error(
@@ -53,6 +50,49 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+
+  const loginWithGoogle = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
+      try {
+        message.loading({
+          content: "Đang xác thực với Google...",
+          key: "google-login",
+        });
+
+        // Gọi xuống API Backend của bạn để đổi Code lấy Token
+        const res = await axios.post("http://localhost:5000/auth/google", {
+          code: codeResponse.code,
+        });
+
+        // Backend trả về JWT của hệ thống, lưu vào localStorage
+        const systemToken = res.data.token;
+        const userData = res.data.user;
+        localStorage.setItem("token", systemToken);
+
+        message.success({
+          content: "Đăng nhập Google thành công!",
+          key: "google-login",
+        });
+
+        // Logic điều hướng sau khi login thành công
+        const isEmployer = userData?.role === "employer";
+        const defaultPath = isEmployer ? "/employer/dashboard" : "/";
+        const fromPath = location.state?.from?.pathname;
+        const targetPath =
+          fromPath && fromPath !== "/" ? fromPath : defaultPath;
+
+        window.location.href = targetPath;
+      } catch (err) {
+        console.error(err);
+        message.error({
+          content: "Lỗi xác thực từ máy chủ!",
+          key: "google-login",
+        });
+      }
+    },
+    onError: () => message.error("Đăng nhập Google bị hủy hoặc thất bại"),
+  });
 
   return (
     <div className="auth-page">
@@ -141,7 +181,7 @@ const LoginPage = () => {
           size="large"
           block
           className="auth-social-btn auth-social-btn--google"
-          onClick={() => message.info("Tính năng sắp ra mắt")}
+          onClick={() => loginWithGoogle()}
         >
           Google
         </Button>

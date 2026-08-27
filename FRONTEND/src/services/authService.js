@@ -2,7 +2,7 @@
 // Giao tiếp với API Backend thật
 // ===========================
 
-import apiClient from "./api"; 
+import apiClient from "./api";
 
 const authService = {
   login: async (credentials) => {
@@ -16,18 +16,14 @@ const authService = {
   },
 
   logout: async () => {
-    
-   
     return { success: true };
   },
 
   getProfile: async () => {
-    
     return await apiClient.get("/auth/profile");
   },
 
   updateProfile: async (data) => {
-    
     const res = await apiClient.patch("/auth/profile", data);
     return res?.user ?? res;
   },
@@ -43,6 +39,15 @@ const authService = {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+
+  sendOtp: async (email) => {
+    return await apiClient.post("/auth/send-otp", { email });
+  },
+
+  resetPassword: async (resetData) => {
+    // resetData là object { email, otp, newPassword }
+    return await apiClient.post("/auth/reset-password", resetData);
   },
 };
 

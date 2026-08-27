@@ -2,7 +2,7 @@ BACKEND/node_modules
 topcv-clone/node_modules
 
 BACKEND/.env
-topcv-clone/.env
+FRONTEND/.env
 
 dist
 build
