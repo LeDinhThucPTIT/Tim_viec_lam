@@ -53,7 +53,7 @@ import {
 import dayjs from "dayjs";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import CVPreview from "../components/cv/CVPreview";
+import CVPreview from "../components/CV/CVPreview";
 import cvService, { CV_TEMPLATES } from "../services/cvService";
 import { useAuth } from "../hooks/useAuth";
 import "./CVPage.css";
