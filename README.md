@@ -70,4 +70,12 @@ Mở 2 terminal song song cho Frontend và Backend:
 | `POST` | `/api/auth/send-otp` | Gửi mã OTP khôi phục mật khẩu |
 
 ---
+## 🌐 Demo & Deployment
+
+* **Link Frontend (Live Demo):** [https://tim-viec-lam.vercel.app](https://tim-viec-lam.vercel.app)
+* **Link Backend API:** [https://tim-viec-lam-backend.onrender.com](https://tim-viec-lam-backend.onrender.com)
+
+[![Live Demo](https://img.shields.io/badge/Status-Live%20Demo-brightgreen?style=for-the-badge&logo=vercel)](https://tim-viec-lam.vercel.app)
+[![API Status](https://img.shields.io/badge/Backend-Render-blue?style=for-the-badge&logo=render)](https://tim-viec-lam-backend.onrender.com)
+
 **Bản quyền © 2026 bởi Lê Đình Thức.**
